@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Gestion du Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <!-- SECTION CONNEXION -->
+    <section id="login-section" class="section admin-section" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center;">
+        <h2>Admin - Connexion</h2>
+        <div class="admin-container" style="flex-direction: column;">
+            <input type="email" id="login-email" placeholder="Votre email" class="admin-input" style="max-width: 300px;">
+            <input type="password" id="login-password" placeholder="Mot de passe" class="admin-input" style="max-width: 300px;">
+            <button id="login-btn" class="btn">Se connecter</button>
+            <p id="login-error" style="color: #ef4444; margin-top: 10px;"></p>
+        </div>
+    </section>
+
+    <!-- SECTION ADMINISTRATION (Cachée par défaut) -->
+    <section id="admin-section" class="section admin-section" style="display: none;">
+        <div style="display: flex; justify-content: center; align-items: center; gap: 20px; margin-bottom: 30px;">
+            <h2 style="margin: 0;">Ajouter un projet</h2>
+            <button id="logout-btn" class="btn" style="background: #ef4444; color: white;">Déconnexion</button>
+        </div>
+        <div class="admin-container">
+            <div id="drop-zone" class="drop-zone">
+                <p>Glissez-déposez votre image ici<br>ou cliquez pour sélectionner</p>
+                <input type="file" id="file-input" hidden>
+            </div>
+            <div class="admin-form">
+                <input type="text" id="project-title" placeholder="Titre du projet" class="admin-input">
+                <textarea id="project-desc" placeholder="Description courte" class="admin-input"></textarea>
+                <input type="text" id="project-url" placeholder="Lien du projet (ex: https://github.com/...)" class="admin-input">
+                <button id="submit-btn" class="btn">Publier le projet</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- On charge le script admin -->
+    <script src="admin.js"></script>
+</body>
+</html>

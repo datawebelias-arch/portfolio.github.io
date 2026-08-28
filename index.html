@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Data Analyst</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">Mon<span>Portfolio</span></div>
+        <ul class="nav-links">
+            <li><a href="#accueil">Accueil</a></li>
+            <li><a href="#projets">Projets</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Header / Accueil -->
+    <header id="accueil" class="hero">
+        <div class="hero-content">
+            <h1>Salut, je suis <span class="highlight">Ton Nom</span></h1>
+            <p class="subtitle">Data Analyst & Développeur Streamlit</p>
+            <a href="#projets" class="btn">Voir mes projets</a>
+        </div>
+    </header>
+
+    <!-- Section Projets -->
+    <section id="projets" class="section">
+        <h2>Mes Projets</h2>
+        <div id="projects-grid" class="projects-grid">
+            <p>Chargement des projets...</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+        <h2>Contactez-moi</h2>
+        <p>Email : ton.email@example.com</p>
+        <p>LinkedIn : <a href="#">Ton Profil LinkedIn</a></p>
+        <p>&copy; 2023 Ton Nom. Tous droits réservés.</p>
+    </footer>
+
+    <!-- On ne charge que le script public -->
+    <script src="script.js"></script>
+</body>
+</html>
