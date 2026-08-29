@@ -1,8 +1,7 @@
 // 1. CONFIGURATION SUPABASE
 const SUPABASE_URL = 'https://bapbiqcllcibwjedcjux.supabase.co/rest/v1/'; // Remplace
 const SUPABASE_KEY = 'sb_publishable_vcKvEPHg0QPD9EP2zcykSw_jTf3RKDU'; // Remplace
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 // 2. GESTION DE L'AUTHENTIFICATION
 const loginSection = document.getElementById('login-section');
 const adminSection = document.getElementById('admin-section');
@@ -17,11 +16,11 @@ function updateUIBasedOnAuth(session) {
     }
 }
 
-supabase.auth.getSession().then(({ data: { session } }) => {
+supabaseClient.auth.getSession().then(({ data: { session } }) => {
     updateUIBasedOnAuth(session);
 });
 
-supabase.auth.onAuthStateChange((_event, session) => {
+supabaseClient.auth.onAuthStateChange((_event, session) => {
     updateUIBasedOnAuth(session);
 });
 
@@ -30,7 +29,7 @@ document.getElementById('login-btn').addEventListener('click', async () => {
     const password = document.getElementById('login-password').value;
     const errorP = document.getElementById('login-error');
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
     if (error) {
         errorP.innerText = "Erreur de connexion. Vérifiez vos identifiants.";
     } else {
@@ -39,7 +38,7 @@ document.getElementById('login-btn').addEventListener('click', async () => {
 });
 
 document.getElementById('logout-btn').addEventListener('click', async () => {
-    await supabase.auth.signOut();
+    await supabaseClient.auth.signOut();
 });
 
 // 3. GESTION DU DRAG & DROP
@@ -77,13 +76,13 @@ document.getElementById('submit-btn').addEventListener('click', async () => {
     }
 
     const fileName = `${Date.now()}-${selectedFile.name}`;
-    const { error: uploadError } = await supabase.storage.from('portfolio-images').upload(fileName, selectedFile);
+    const { error: uploadError } = await supabaseClient.storage.from('portfolio-images').upload(fileName, selectedFile);
 
     if (uploadError) { alert('Erreur upload image.'); return; }
 
-    const { data: publicUrlData } = supabase.storage.from('portfolio-images').getPublicUrl(fileName);
+    const { data: publicUrlData } = supabaseClient.storage.from('portfolio-images').getPublicUrl(fileName);
 
-    const { error: insertError } = await supabase.from('projects').insert([{ 
+    const { error: insertError } = await supabaseClient.from('projects').insert([{ 
         title: title, description: desc, project_url: url, image_url: publicUrlData.publicUrl 
     }]);
 
@@ -101,7 +100,7 @@ document.getElementById('submit-btn').addEventListener('click', async () => {
 // 5. CHARGER ET SUPPRIMER DES PROJETS (ADMIN)
 // ==========================================
 async function loadAdminProjects() {
-    const { data: projects, error } = await supabase
+    const { data: projects, error } = await supabaseClient
         .from('projects')
         .select('*')
         .order('created_at', { ascending: false });
@@ -148,12 +147,12 @@ async function loadAdminProjects() {
             // Correction de l'apostrophe ici (guillemets doubles "")
             if (confirm("Voulez-vous vraiment supprimer ce projet ? L'image sera aussi supprimée du stockage.")) {
                 // 1. Supprimer l'image du Storage
-                const { error: storageError } = await supabase.storage
+                const { error: storageError } = await supabaseClient.storage
                     .from('portfolio-images')
                     .remove([imageToDelete]);
 
                 // 2. Supprimer le projet de la base de données
-                const { error: dbError } = await supabase
+                const { error: dbError } = await supabaseClient
                     .from('projects')
                     .delete()
                     .eq('id', projectId);
@@ -170,7 +169,7 @@ async function loadAdminProjects() {
 }
 
 // Charger les projets admin quand on se connecte
-supabase.auth.onAuthStateChange((_event, session) => {
+supabaseClient.auth.onAuthStateChange((_event, session) => {
     if (session) {
         loadAdminProjects();
     }
