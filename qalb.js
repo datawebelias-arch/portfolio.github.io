@@ -2,6 +2,7 @@
 const SUPABASE_URL = 'https://bapbiqcllcibwjedcjux.supabase.co/rest/v1/'; // Remplace
 const SUPABASE_KEY = 'sb_publishable_vcKvEPHg0QPD9EP2zcykSw_jTf3RKDU'; // Remplace
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 // 2. GESTION DE L'AUTHENTIFICATION
 const loginSection = document.getElementById('login-section');
 const adminSection = document.getElementById('admin-section');
@@ -59,7 +60,7 @@ dropZone.addEventListener('drop', (e) => {
     e.preventDefault();
     dropZone.classList.remove('dragover');
     if (e.dataTransfer.files.length > 0) {
-        selectedFile = e.dataTransfer.files[0];
+        selectedFile = e.target.files[0];
         dropZone.querySelector('p').innerText = `Image sélectionnée : ${selectedFile.name}`;
     }
 });
@@ -94,11 +95,11 @@ document.getElementById('submit-btn').addEventListener('click', async () => {
     document.getElementById('project-url').value = '';
     selectedFile = null;
     dropZone.querySelector('p').innerHTML = 'Glissez-déposez votre image ici<br>ou cliquez pour sélectionner';
+    
+    loadAdminProjects();
 });
 
-// ==========================================
 // 5. CHARGER ET SUPPRIMER DES PROJETS (ADMIN)
-// ==========================================
 async function loadAdminProjects() {
     const { data: projects, error } = await supabaseClient
         .from('projects')
@@ -124,10 +125,8 @@ async function loadAdminProjects() {
         const card = document.createElement('div');
         card.className = 'card';
         
-        // Extraire le nom du fichier image depuis l'URL pour pouvoir le supprimer du Storage
         const imagePath = project.image_url.split('/portfolio-images/')[1];
         
-        // Utilisation de guillemets doubles pour éviter l'erreur d'apostrophe
         card.innerHTML = `
             <img src="${project.image_url}" alt="${project.title}" style="height: 120px; object-fit: cover;">
             <div class="card-content">
@@ -138,20 +137,16 @@ async function loadAdminProjects() {
         grid.appendChild(card);
     });
 
-    // Ajouter les écouteurs d'événements sur les boutons supprimer
     document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', async (e) => {
             const projectId = e.target.getAttribute('data-id');
             const imageToDelete = e.target.getAttribute('data-image');
             
-            // Correction de l'apostrophe ici (guillemets doubles "")
             if (confirm("Voulez-vous vraiment supprimer ce projet ? L'image sera aussi supprimée du stockage.")) {
-                // 1. Supprimer l'image du Storage
                 const { error: storageError } = await supabaseClient.storage
                     .from('portfolio-images')
                     .remove([imageToDelete]);
 
-                // 2. Supprimer le projet de la base de données
                 const { error: dbError } = await supabaseClient
                     .from('projects')
                     .delete()
@@ -161,14 +156,13 @@ async function loadAdminProjects() {
                     alert('Une erreur est survenue lors de la suppression.');
                 } else {
                     alert('Projet supprimé avec succès.');
-                    loadAdminProjects(); // Rafraîchir la liste
+                    loadAdminProjects();
                 }
             }
         });
     });
 }
 
-// Charger les projets admin quand on se connecte
 supabaseClient.auth.onAuthStateChange((_event, session) => {
     if (session) {
         loadAdminProjects();
