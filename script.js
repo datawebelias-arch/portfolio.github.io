@@ -1,6 +1,6 @@
 // 1. CONFIGURATION SUPABASE
-const SUPABASE_URL = 'COLLE_TON_URL_ICI';
-const SUPABASE_KEY = 'COLLE_TA_CLE_ICI';
+const SUPABASE_URL = 'https://bapbiqcllcibwjedcjux.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_vcKvEPHg0QPD9EP2zcykSw_jTf3RKDU';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // 2. AFFICHAGE DES PROJETS

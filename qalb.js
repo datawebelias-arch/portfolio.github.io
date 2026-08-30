@@ -1,5 +1,5 @@
 // 1. CONFIGURATION SUPABASE
-const SUPABASE_URL = 'https://bapbiqcllcibwjedcjux.supabase.co/rest/v1/'; // Remplace
+const SUPABASE_URL = 'https://bapbiqcllcibwjedcjux.supabase.co'; // Remplace
 const SUPABASE_KEY = 'sb_publishable_vcKvEPHg0QPD9EP2zcykSw_jTf3RKDU'; // Remplace
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
