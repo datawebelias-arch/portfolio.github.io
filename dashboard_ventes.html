@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Ventes</title>
+    <!-- Librairie pour les graphiques -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-main: #101014;
+            --bg-card: #1C1C22;
+            --bg-sidebar: #15151A;
+            --text-main: #FFFFFF;
+            --text-muted: #8B8B93;
+            --accent-purple: #7F00FF;
+            --accent-green: #00FF9D;
+            --accent-orange: #FFA500;
+            --border-color: #2A2A35;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ---- SIDEBAR ---- */
+        .sidebar {
+            width: 250px;
+            background: var(--bg-sidebar);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+        }
+        .logo { font-size: 1.5rem; font-weight: 800; margin-bottom: 40px; color: var(--accent-green); }
+        .nav-item {
+            display: flex; align-items: center; gap: 15px;
+            padding: 12px 15px; margin-bottom: 10px;
+            color: var(--text-muted); text-decoration: none;
+            border-radius: 8px; transition: 0.3s; font-weight: 500;
+        }
+        .nav-item.active, .nav-item:hover { background: var(--bg-card); color: var(--text-main); }
+        .nav-item.active { border-left: 3px solid var(--accent-green); }
+
+        .user-profile { margin-top: auto; display: flex; align-items: center; gap: 10px; padding-top: 20px; border-top: 1px solid var(--border-color); }
+        .user-profile img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+
+        /* ---- MAIN CONTENT ---- */
+        .main-content { flex: 1; padding: 30px 40px; overflow-y: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header h1 { font-size: 2rem; }
+        .header p { color: var(--text-muted); font-size: 0.9rem; }
+        .search-bar { background: var(--bg-card); padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; }
+        .search-bar input { background: none; border: none; outline: none; color: var(--text-main); width: 200px; }
+        .btn-new { background: var(--accent-green); color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+
+        /* ---- KPI CARDS ---- */
+        .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+        .kpi-card { background: var(--bg-card); padding: 25px; border-radius: 15px; border: 1px solid var(--border-color); }
+        .kpi-card .icon { font-size: 1.5rem; margin-bottom: 10px; }
+        .kpi-card h3 { font-size: 2rem; margin-bottom: 5px; }
+        .kpi-card p { color: var(--text-muted); font-size: 0.9rem; }
+        .kpi-card .trend { font-size: 0.8rem; font-weight: 700; }
+        .trend.up { color: var(--accent-green); }
+        .trend.down { color: #FF4C4C; }
+
+        /* ---- CHARTS ---- */
+        .charts-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        .chart-card { background: var(--bg-card); padding: 25px; border-radius: 15px; border: 1px solid var(--border-color); }
+        .chart-card h2 { font-size: 1.2rem; margin-bottom: 20px; }
+        .chart-container { height: 300px; position: relative; }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="logo">DataDash</div>
+        <a href="#" class="nav-item active"><i class="fas fa-th-large"></i> Dashboard</a>
+        <a href="#" class="nav-item"><i class="fas fa-chart-bar"></i> Analytics</a>
+        <a href="#" class="nav-item"><i class="fas fa-database"></i> Sources</a>
+        <a href="#" class="nav-item"><i class="fas fa-cog"></i> Settings</a>
+        
+        <div class="user-profile">
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=100" alt="User">
+            <div>
+                <div style="font-size: 0.9rem; font-weight: 600;">Webelias</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Admin</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main-content">
+        <div class="header">
+            <div>
+                <h1>Dashboard</h1>
+                <p>Overall summary and reports</p>
+            </div>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <div class="search-bar">
+                    <i class="fas fa-search" style="color: var(--text-muted);"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+                <button class="btn-new">+ New Report</button>
+            </div>
+        </div>
+
+        <!-- KPIs -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="icon" style="color: var(--accent-green);"><i class="fas fa-arrow-up"></i></div>
+                <h3>54,320 €</h3>
+                <p>Total Revenue</p>
+                <span class="trend up">▲ 12.5% vs last month</span>
+            </div>
+            <div class="kpi-card">
+                <div class="icon" style="color: var(--accent-orange);"><i class="fas fa-shopping-cart"></i></div>
+                <h3>1,245</h3>
+                <p>Total Sales</p>
+                <span class="trend up">▲ 8.2% vs last month</span>
+            </div>
+            <div class="kpi-card">
+                <div class="icon" style="color: #FF4C4C;"><i class="fas fa-users"></i></div>
+                <h3>8,920</h3>
+                <p>Active Customers</p>
+                <span class="trend down">▼ 2.1% vs last month</span>
+            </div>
+        </div>
+
+        <!-- CHARTS -->
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h2>Sales Performance</h2>
+                <div class="chart-container">
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h2>Revenue by Category</h2>
+                <div class="chart-container">
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration des graphiques
+        const ctxLine = document.getElementById('lineChart').getContext('2d');
+        const ctxBar = document.getElementById('barChart').getContext('2d');
+
+        // Graphique Ligne (Ventes)
+        new Chart(ctxLine, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil'],
+                datasets: [{
+                    label: 'Ventes 2023',
+                    data: [1200, 1900, 3000, 2500, 4200, 3800, 5100],
+                    borderColor: '#00FF9D',
+                    backgroundColor: 'rgba(0, 255, 157, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { grid: { color: '#2A2A35' }, ticks: { color: '#8B8B93' } },
+                    x: { grid: { display: false }, ticks: { color: '#8B8B93' } }
+                }
+            }
+        });
+
+        // Graphique Barres (Catégories)
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['Tech', 'Food', 'Clothes', 'Tools'],
+                datasets: [{
+                    label: 'Revenus',
+                    data: [4500, 2200, 3100, 1500],
+                    backgroundColor: ['#7F00FF', '#00FF9D', '#FFA500', '#FF4C4C'],
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { grid: { color: '#2A2A35' }, ticks: { color: '#8B8B93' } },
+                    x: { grid: { display: false }, ticks: { color: '#8B8B93' } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
